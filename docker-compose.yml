@@ -1,0 +1,15 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:16.4-alpine3.20
+    environment:
+      POSTGRES_USER: joselo
+      POSTGRES_PASSWORD: 3322
+      POSTGRES_DB: eleccionesepis
+    ports:
+      - "8000:5432"
+    volumes:
+      - db_data_elecciones_epis:/var/lib/postgresql/data
+
+volumes:
+  db_data_elecciones_epis:
