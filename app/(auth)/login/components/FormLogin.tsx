@@ -25,6 +25,7 @@ import { useState, useTransition } from "react";
 import { formLoginSchema, FormLoginValues } from "@/schemas/auth.scheme";
 import { loginAction, registerAction } from "@/actions/auth-action";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const FormLogin = () => {
   const [isPending, startTransition] = useTransition();
@@ -48,6 +49,12 @@ const FormLogin = () => {
       if (res.error) {
         setError(res.error);
       } else {
+        toast.success("Vienvenido", {
+          richColors: true,
+          duration: 2000,
+          position: "top-center",
+          dismissible: true,
+        });
         router.push("/votar");
       }
     });

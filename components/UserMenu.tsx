@@ -61,9 +61,6 @@ export default async function UserMenu() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-12 w-12 rounded-full">
           <Avatar className="h-12 w-12">
-            {session.user.image && (
-              <AvatarImage src={session.user.image} alt="User menu" />
-            )}
             <AvatarFallback>
               <User />
             </AvatarFallback>

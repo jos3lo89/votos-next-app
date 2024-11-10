@@ -28,7 +28,7 @@ export default auth((req) => {
 
   // Redirigir al usuario logueado fuera de las rutas de autenticación
   if (isLoggedIn && authRoutes.includes(nextUrl.pathname)) {
-    return NextResponse.redirect(new URL("/home", nextUrl)); // Redirecciona a /home si intenta ir a /login ya estando autenticado
+    return NextResponse.redirect(new URL("/", nextUrl)); // Redirecciona a /home si intenta ir a /login ya estando autenticado
   }
 
   // Redirigir a /login si el usuario no está logueado y trata de acceder a una ruta privada
