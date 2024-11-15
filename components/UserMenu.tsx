@@ -20,6 +20,7 @@ import {
   User,
 } from "lucide-react";
 import LogoutButton from "./LogoutButton";
+import Link from "next/link";
 // import LoginButton from "./LoginButton";
 
 export default async function UserMenu() {
@@ -84,6 +85,19 @@ export default async function UserMenu() {
             <UserIcon className="mr-2 h-4 w-4" />
             <span>Perfil</span>
           </DropdownMenuItem>
+          <DropdownMenuItem>
+            <UserIcon className="mr-2 h-4 w-4" />
+            <Link href="/votar" className="w-full">
+              Votar
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <UserIcon className="mr-2 h-4 w-4" />
+            <Link href="/alumnos" className="w-full">
+              Lista de alumnos
+            </Link>
+          </DropdownMenuItem>
+
           <DropdownMenuItem>
             <SettingsIcon className="mr-2 h-4 w-4" />
             <span>Configuración</span>

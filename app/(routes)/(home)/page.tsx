@@ -12,11 +12,11 @@ const HomePage = () => {
   return (
     <div className=" flex flex-col items-center justify-center  p-4">
       <div className="mb-8">
-        <div className="w-32 h-32 relative">
+        <div className="w-52 h-auto relative">
           <img
-            src="https://i.pinimg.com/564x/71/74/bd/7174bd5b345599a2d7c26e71e91e14e1.jpg"
+            src="logoepis.png"
+            // src="https://i.pinimg.com/564x/71/74/bd/7174bd5b345599a2d7c26e71e91e14e1.jpg"
             alt="image EPIS"
-            className="rounded-full"
           />
         </div>
       </div>
@@ -34,7 +34,7 @@ const HomePage = () => {
           </p>
         </CardContent>
         <CardFooter className="flex justify-center">
-          <Link href="/login">
+          <Link href="/votar">
             <Button size="lg">Ingresar al Sistema</Button>
           </Link>
         </CardFooter>

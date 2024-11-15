@@ -29,3 +29,50 @@ enum Role {
   user
   admin
 }
+
+model Partidos {
+  id          String   @id @default(uuid())
+  nombre      String
+  imagen_url  String
+  imagen_id   String
+  descripcion String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt()
+
+  presidente Presidentes?
+}
+
+model Presidentes {
+  id         String  @id @default(uuid())
+  nombre     String
+  apelllido  String
+  codigo     String
+  ciclo      Int
+  foto_url   String?
+  foto_id    String?
+  id_partido String  @unique
+
+  partido Partidos @relation(fields: [id_partido], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+}
+
+model Alumnos {
+  id                  String   @id @default(uuid())
+  num_orden           Int
+  apellido_nombre     String
+  escuela_profesional String
+  ciclo               Int
+  voto_emitido        Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt()
+}
+
+model Votos {
+  id         String   @id @default(uuid())
+  id_alumno  String
+  id_partido String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt()
+}

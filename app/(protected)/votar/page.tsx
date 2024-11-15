@@ -109,7 +109,7 @@ const VotarPage = () => {
   };
 
   return (
-    <div className="min-h-screen  flex flex-col items-center p-4">
+    <div className="flex flex-col items-center p-4">
       <div className="w-full max-w-md mb-8">
         <div className="flex items-center  rounded-lg shadow-md">
           <Input
