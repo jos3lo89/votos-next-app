@@ -2,6 +2,7 @@ import { object, string, infer } from "zod";
 
 const envVar = object({
   DATABASE_URL: string(),
+  STUDENT_URL: string(),
   AUTH_SECRET: string(),
 });
 

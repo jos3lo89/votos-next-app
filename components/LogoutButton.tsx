@@ -10,7 +10,7 @@ const LogoutButton = () => {
   };
 
   return (
-    <Button variant="destructive" onClick={handleClick} className="w-full">
+    <Button variant="outline" onClick={handleClick} className="w-full hover:bg-red-600">
       <LogOutIcon className="mr-2 h-4 w-4" />
       Cerrar sesión
     </Button>

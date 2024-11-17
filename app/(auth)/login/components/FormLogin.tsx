@@ -55,7 +55,7 @@ const FormLogin = () => {
           position: "top-center",
           dismissible: true,
         });
-        router.push("/votar");
+        router.push("/dashboard");
       }
     });
   };

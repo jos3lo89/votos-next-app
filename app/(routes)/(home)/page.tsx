@@ -13,11 +13,7 @@ const HomePage = () => {
     <div className=" flex flex-col items-center justify-center  p-4">
       <div className="mb-8">
         <div className="w-52 h-auto relative">
-          <img
-            src="logoepis.png"
-            // src="https://i.pinimg.com/564x/71/74/bd/7174bd5b345599a2d7c26e71e91e14e1.jpg"
-            alt="image EPIS"
-          />
+          <img src="logoepis.png" alt="image EPIS" />
         </div>
       </div>
 
@@ -33,10 +29,11 @@ const HomePage = () => {
             Federado de la carrera de Ingeniería de Sistemas
           </p>
         </CardContent>
-        <CardFooter className="flex justify-center">
-          <Link href="/votar">
-            <Button size="lg">Ingresar al Sistema</Button>
+        <CardFooter className="flex justify-center flex-col items-center gap-5">
+          <Link href="/emitir-voto">
+            <Button size="lg" variant="outline" className="hover:bg-blue-600">Emitir voto</Button>
           </Link>
+          <Link href="/dashboard" className="text-blue-500 font-light text-sm ">Ingresar al sistema</Link>
         </CardFooter>
       </Card>
     </div>

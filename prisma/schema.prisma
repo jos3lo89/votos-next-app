@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -25,54 +19,72 @@ model User {
   createdAt DateTime @default(now())
 }
 
-enum Role {
-  user
-  admin
-}
-
 model Partidos {
-  id          String   @id @default(uuid())
+  id          String           @id @default(uuid())
   nombre      String
   imagen_url  String
   imagen_id   String
   descripcion String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt()
-
-  presidente Presidentes?
+  created_at  DateTime         @default(now())
+  updated_at  DateTime         @updatedAt
+  junta       JuntaDirectiva[]
+  votos       Votos[]
 }
 
-model Presidentes {
-  id         String  @id @default(uuid())
+model JuntaDirectiva {
+  id         String   @id @default(uuid())
   nombre     String
-  apelllido  String
-  codigo     String
+  apellido   String
+  codigo     String   @unique
+  dni        String?  @unique
   ciclo      Int
   foto_url   String?
   foto_id    String?
-  id_partido String  @unique
-
-  partido Partidos @relation(fields: [id_partido], references: [id])
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt()
+  cargo      Cargo
+  id_partido String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  partido    Partidos @relation(fields: [id_partido], references: [id], onDelete: Cascade)
 }
 
-model Alumnos {
+model Estudiantes {
   id                  String   @id @default(uuid())
   num_orden           Int
   apellido_nombre     String
   escuela_profesional String
   ciclo               Int
   voto_emitido        Boolean  @default(false)
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt()
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  codigo              String   @unique
+  votos               Votos?
 }
 
 model Votos {
-  id         String   @id @default(uuid())
-  id_alumno  String
-  id_partido String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt()
+  id            String      @id @default(uuid())
+  id_estudiante String      @unique
+  id_partido    String?
+  created_at    DateTime    @default(now())
+  updated_at    DateTime    @updatedAt
+  voto_nulo     Boolean     @default(false)
+  estudiante    Estudiantes @relation(fields: [id_estudiante], references: [id], onDelete: Cascade)
+  partido       Partidos?   @relation(fields: [id_partido], references: [id], onDelete: Cascade)
+}
+
+enum Role {
+  user
+  admin
+}
+
+enum Cargo {
+  Presidente
+  Vicepresidente
+  Secretario_Organizacion
+  Secretario_Asuntos_Academicos
+  Secretario_Prensa_Propaganda
+  Secretario_Economia
+  Secretario_Deporte
+  Secretario_Cultura
+  Secretario_Bienestar_Universitario
+  Secretario_Defensa
 }

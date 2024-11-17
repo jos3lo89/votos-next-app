@@ -1,4 +1,4 @@
-import { ModeToggle } from "@/components/theme/ModeToggle";
+import NavBarPublic from "./components/NavBarPublic";
 
 const HomeLayout = ({
   children,
@@ -7,9 +7,7 @@ const HomeLayout = ({
 }>) => {
   return (
     <main>
-      <header className="bg-secondary py-2 px-6 flex justify-end">
-        <ModeToggle />
-      </header>
+      <NavBarPublic />
       {children}
     </main>
   );
