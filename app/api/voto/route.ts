@@ -55,3 +55,20 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.json({ error: "Error interno del servidor" });
   }
 };
+
+export const GET = async () => {
+  try {
+    const votos = await db.votos.findMany({
+      include: {
+        partido: true,
+        estudiante: true,
+      },
+    });
+    return NextResponse.json(votos);
+  } catch (error) {
+    console.log(error);
+    if (error instanceof PrismaClientKnownRequestError) {
+    }
+    return NextResponse.json({ error: error });
+  }
+};

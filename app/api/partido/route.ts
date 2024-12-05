@@ -1,8 +1,10 @@
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { uploadStream } from "@/lib/cloudinary";
-import { z, ZodError } from "zod";
+import { date, z, ZodError } from "zod";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { writeFile } from "fs/promises";
+import path from "path";
 
 const partidoSchemaRegister = z.object({
   nombre: z.string({
@@ -40,17 +42,28 @@ export const POST = async (request: Request) => {
     const bytes = await image.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const resultImage = await uploadStream(buffer, "epis");
+    const fileName = `${Date.now()}.${image.name.split(".").pop()}`;
+    const filePath = path.join(process.cwd(), "public/img", fileName);
+
+    await writeFile(filePath, buffer);
+
+    const serverUrl =
+      process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000";
+    const imageUrl = `${serverUrl}/img/${fileName}`;
+
+    // cloudinary
+    // const resultImage = await uploadStream(buffer, "epis");
 
     const neuvPartido = await db.partidos.create({
       data: {
-        imagen_id: resultImage.public_id,
-        imagen_url: resultImage.url,
+        imagen_id: imageUrl,
+        imagen_url: imageUrl,
         ...validateData,
       },
     });
 
-    return NextResponse.json(neuvPartido, { status: 201 });
+    // return NextResponse.json(neuvPartido, { status: 201 });
+    return NextResponse.json({ message: "creado" }, { status: 201 });
   } catch (error) {
     console.log(error);
 

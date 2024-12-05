@@ -12,7 +12,7 @@ const HomePage = () => {
   return (
     <div className=" flex flex-col items-center justify-center  p-4">
       <div className="mb-8">
-        <div className="w-52 h-auto relative">
+        <div className="w-44 h-auto relative">
           <img src="logoepis.png" alt="image EPIS" />
         </div>
       </div>
@@ -20,13 +20,13 @@ const HomePage = () => {
       <Card className="w-full max-w-md text-center">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">
-            Sistema de Votación
+            {/* Sistema de Votación */}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-lg mb-4">
             Bienvenido al sistema de votación para las elecciones del Centro
-            Federado de la carrera de Ingeniería de Sistemas
+            Federado de la carrera de Ingeniería de Sistemas.
           </p>
         </CardContent>
         <CardFooter className="flex justify-center flex-col items-center gap-5">

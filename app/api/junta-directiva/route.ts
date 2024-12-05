@@ -1,7 +1,9 @@
 import { uploadStream } from "@/lib/cloudinary";
 import { db } from "@/lib/db";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { writeFile } from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
+import path from "path";
 import { z } from "zod";
 
 enum Cargo {
@@ -32,7 +34,6 @@ const formDataSchema = z.object({
   id_partido: z.string().min(1, "El ID del partido es requerido"),
 });
 
-
 export const POST = async (request: NextRequest) => {
   try {
     const formData = await request.formData();
@@ -62,13 +63,22 @@ export const POST = async (request: NextRequest) => {
     const bytes = await foto.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const uploadedImage = await uploadStream(buffer, "epis");
+    // const uploadedImage = await uploadStream(buffer, "epis");
+
+    const fileName = `${Date.now()}.${foto.name.split(".").pop()}`;
+    const filePath = path.join(process.cwd(), "public/img", fileName);
+
+    await writeFile(filePath, buffer);
+
+    const serverUrl =
+      process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000";
+    const imageUrl = `${serverUrl}/img/${fileName}`;
 
     const nuevoIntegrante = await db.juntaDirectiva.create({
       data: {
         ...validatedData,
-        foto_id: uploadedImage.public_id,
-        foto_url: uploadedImage.url,
+        foto_id: imageUrl,
+        foto_url: imageUrl,
       },
     });
 

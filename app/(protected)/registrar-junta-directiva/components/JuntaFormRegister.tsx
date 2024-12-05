@@ -138,6 +138,15 @@ const JuntaFormRegister = () => {
     }
   };
 
+  // const getStudentData = async (codigo: string) => {
+  //   try {
+  //     const res = await api.get(`estudiantes/${codigo}`);
+  //     console.log("datadatadata", res.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -234,6 +243,10 @@ const JuntaFormRegister = () => {
                   </FormItem>
                 )}
               />
+              {/*
+              <Button type="button" onClick={() => getStudentData(form.getValues("codigo"))}>
+                Busacar estudiante
+              </Button> */}
 
               <FormField
                 control={form.control}
@@ -340,7 +353,7 @@ const JuntaFormRegister = () => {
         </div>
 
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Enviando..." : "Enviar"}
+          {isSubmitting ? "Registrando..." : "Registrar"}
         </Button>
       </form>
     </Form>

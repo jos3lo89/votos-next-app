@@ -6,12 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "add-admin": "bun prisma/adminRegister.ts",
+    "add-students": "bun prisma/prismaSeed.ts"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.3",
     "@hookform/resolvers": "^3.9.1",
-    "@prisma/client": "^5.22.0",
+    "@prisma/client": "^6.0.1",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-collapsible": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.2",
@@ -27,16 +29,23 @@
     "class-variance-authority": "^0.7.0",
     "cloudinary": "^2.5.1",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.13",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "lucide-react": "^0.460.0",
     "next": "15.0.2",
     "next-auth": "^5.0.0-beta.25",
     "next-themes": "^0.4.3",
     "react": "19.0.0-rc-02c0e824-20241028",
+    "react-data-table-component": "^7.6.2",
     "react-dom": "19.0.0-rc-02c0e824-20241028",
     "react-hook-form": "^7.53.2",
+    "recharts": "^2.13.3",
     "sonner": "^1.7.0",
+    "styled-components": "^6.1.13",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
+    "xlsx": "^0.18.5",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -47,7 +56,7 @@
     "eslint": "^8",
     "eslint-config-next": "15.0.2",
     "postcss": "^8",
-    "prisma": "^5.22.0",
+    "prisma": "^6.0.1",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }

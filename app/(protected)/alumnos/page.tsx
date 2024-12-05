@@ -5,11 +5,11 @@ import {
   getCoreRowModel,
   useReactTable,
   getPaginationRowModel,
+  ColumnDef,
+  SortingState,
   getSortedRowModel,
   getFilteredRowModel,
-  ColumnDef,
   ColumnFiltersState,
-  SortingState,
 } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,17 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import api from "@/lib/axios";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import * as XLSX from "xlsx";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { openPopup } from "./pdf-popup/pdfPopup";
 
 interface Alumnos {
   id: string;
@@ -37,17 +48,16 @@ interface Alumnos {
 
 const columns: ColumnDef<Alumnos>[] = [
   {
-    accessorKey: "num_orden",
     header: "N°",
-    cell: ({ row }) => <div>{row.original.num_orden}</div>,
+    cell: (info) => info.row.index + 1,
   },
   {
     accessorKey: "apellido_nombre",
     header: "Apellidos y Nombres",
   },
   {
-    accessorKey: "escuela_profesional",
-    header: "Escuela Profesional",
+    header: "Escuela",
+    cell: () => "EPIS",
   },
   {
     accessorKey: "codigo",
@@ -78,19 +88,39 @@ const STUDENT_URL = "estudiantes";
 const AlumnosPageCsv = () => {
   const [alumnos, setAlumnos] = useState<Alumnos[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [filteredAlumnos, setFilteredAlumnos] = useState<Alumnos[]>([]);
   const [globalFilter, setGlobalFilter] = useState("");
   const [loading, setLoading] = useState(false);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [filterType, setFilterType] = useState("all");
 
   useEffect(() => {
     fetchStudents();
   }, []);
+
+  useEffect(() => {
+    filterStudents(filterType);
+  }, [alumnos, filterType]);
+
+  const filterStudents = (type: string) => {
+    switch (type) {
+      case "voted":
+        setFilteredAlumnos(alumnos.filter((a) => a.voto_emitido));
+        break;
+      case "pending":
+        setFilteredAlumnos(alumnos.filter((a) => !a.voto_emitido));
+        break;
+      default:
+        setFilteredAlumnos(alumnos);
+    }
+  };
 
   const fetchStudents = async () => {
     try {
       setLoading(true);
       const res = await api.get(STUDENT_URL);
       setAlumnos(res.data);
+      setFilteredAlumnos(res.data);
       setLoading(false);
     } catch (error) {
       console.log("Error al cargar los datos:", error);
@@ -98,8 +128,62 @@ const AlumnosPageCsv = () => {
     }
   };
 
+  const getTitle = () => {
+    switch (filterType) {
+      case "voted":
+        return "Estudiantes que Emitieron su Voto";
+      case "pending":
+        return "Estudiantes Pendientes de Votación";
+      default:
+        return "Lista Completa de Estudiantes";
+    }
+  };
+
+  const exportToPDF = () => {
+    const doc = new jsPDF();
+    const title = getTitle();
+
+    doc.text(title, 65, 10);
+
+    const tableData = filteredAlumnos.map((alumno, index) => [
+      index + 1,
+      alumno.apellido_nombre,
+      alumno.escuela_profesional == "INGENIERIA DE SISTEMAS" && "EPIS",
+      alumno.codigo,
+      alumno.ciclo,
+      alumno.voto_emitido ? "Votó" : "Pendiente",
+    ]);
+
+    autoTable(doc, {
+      head: [["N°", "Nombre", "Escuela", "Código", "Ciclo", "Estado"]],
+      body: tableData,
+    });
+
+    const blob = doc.output("blob");
+    const url = URL.createObjectURL(blob);
+
+    openPopup(url, `${title}.pdf`, 1000, 600);
+  };
+
+  const exportToExcel = () => {
+    const tableData2 = filteredAlumnos.map((alumno, index) => ({
+      "N°": index + 1,
+      "Apellidos y Nombres": alumno.apellido_nombre,
+      "Escuela Profesional": alumno.escuela_profesional,
+      Código: alumno.codigo,
+      Ciclo: alumno.ciclo,
+      Estado: alumno.voto_emitido ? "Votó" : "Pendiente",
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(tableData2);
+    const wb = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(wb, ws, "Estudiantes");
+    XLSX.writeFile(wb, `${getTitle()}.xlsx`);
+  };
+
   const table = useReactTable({
-    data: alumnos,
+    data: filteredAlumnos,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -115,43 +199,69 @@ const AlumnosPageCsv = () => {
     },
   });
 
+  const handleFilterChange = (value: string) => {
+    setFilterType(value);
+  };
+
+  const handleRefresh = () => {
+    fetchStudents();
+  };
+
   return (
     <div className="p-4">
-      <div className="flex items-center py-4">
+      <div className="flex items-center gap-4 py-4">
         <Input
           placeholder="Buscar alumnos..."
           value={globalFilter ?? ""}
           onChange={(event) => setGlobalFilter(String(event.target.value))}
           className="max-w-sm"
         />
+
+        <Select value={filterType} onValueChange={handleFilterChange}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Todos" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos</SelectItem>
+            <SelectItem value="voted">Votaron</SelectItem>
+            <SelectItem value="pending">No Votaron</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <div className="flex items-center gap-4 justify-end py-4">
+          <Button variant="outline" onClick={exportToPDF}>
+            Exportar PDF
+          </Button>
+          <Button variant="outline" onClick={exportToExcel}>
+            Exportar Excel
+          </Button>
+          <Button variant="outline" onClick={handleRefresh}>
+            Recargar
+          </Button>
+        </div>
       </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
@@ -168,21 +278,14 @@ const AlumnosPageCsv = () => {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  {loading ? (
-                    <div className="flex items-center justify-center m-6">
-                      {/* <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-white"></div> */}
-                      <span>Cargando...</span>
-                    </div>
-                  ) : (
-                    "No se encontraron resultados."
-                  )}
+                  {loading ? "Cargando..." : "No se encontraron resultados."}
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="flex items-center justify-center space-x-2 py-2">
         <Button
           variant="outline"
           size="sm"
@@ -191,6 +294,7 @@ const AlumnosPageCsv = () => {
         >
           Anterior
         </Button>
+
         <Button
           variant="outline"
           size="sm"

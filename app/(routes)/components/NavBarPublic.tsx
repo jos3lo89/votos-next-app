@@ -20,11 +20,9 @@ const NavBarPublic = () => {
 
   return (
     <header className="bg-secondary py-2 px-6 shadow-md">
-      <div className="container mx-auto flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-semibold text-primary ">
-            Sistema de voto electrónico
-          </h1>
+      <div className="container mx-auto flex justify-around md:justify-between items-center">
+        <div className="hidden md:block">
+          <h1 className="text-xl font-semibold">Sistema de Votación</h1>
         </div>
 
         <nav className="space-x-6">

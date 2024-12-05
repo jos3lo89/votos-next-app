@@ -1,4 +1,4 @@
-import { BookOpen, Bot, Bus, LayoutDashboard, Settings2 } from "lucide-react";
+import { BookOpen, Bus, LayoutDashboard, Users, ChartArea } from "lucide-react";
 
 export const sideBarData = {
   empresa: {
@@ -17,7 +17,7 @@ export const sideBarData = {
     {
       title: "Estudiantes",
       url: "#",
-      icon: Bot,
+      icon: Users,
       isActive: false,
 
       items: [
@@ -27,7 +27,7 @@ export const sideBarData = {
         },
         {
           title: "Agregar estudiantes",
-          url: "#",
+          url: "/agregar-estudiantes",
         },
       ],
     },
@@ -54,11 +54,11 @@ export const sideBarData = {
     {
       title: "Reportes",
       url: "#",
-      icon: Settings2,
+      icon: ChartArea,
       items: [
         {
-          title: "Votos por partido",
-          url: "#",
+          title: "Votos",
+          url: "/reportes",
         },
       ],
     },

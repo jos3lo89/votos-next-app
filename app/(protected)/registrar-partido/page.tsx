@@ -13,7 +13,7 @@ const RegistrarPartidoPage = () => {
   return (
     <Card className="w-full max-w-7xl mx-auto">
       <CardHeader>
-        <CardTitle>Registro de partidos</CardTitle>
+        <CardTitle>Registro de partido</CardTitle>
         <CardDescription>
           Ingresa los datos del partido para su registro.
         </CardDescription>

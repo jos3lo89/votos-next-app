@@ -6,7 +6,17 @@ const { auth } = NextAuth(authConfig);
 
 // Define las rutas públicas, privadas y de autenticación
 const publicRoutes = ["/", "/emitir-voto"];
-const privateRoutes = ["/dashboard", "/alumnos", "/perfil"];
+const privateRoutes = [
+  "/agregar-estudiantes",
+  "/alumnos",
+  "/dashboard",
+  "/lista-partidos",
+  "/partidos",
+  "/perfil",
+  "/registrar-junta-directiva",
+  "/registrar-partido",
+  "/reportes",
+];
 const authRoutes = ["/login"];
 const apiAuthPrefix = "/api/auth";
 

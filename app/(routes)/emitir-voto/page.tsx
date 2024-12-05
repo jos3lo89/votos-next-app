@@ -16,34 +16,16 @@ import api from "@/lib/axios";
 import { toast } from "sonner";
 import { PartidosJunta } from "@/types/votos-next";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-export interface Estudiante {
-  id: string;
-  num_orden: number;
-  apellido_nombre: string;
-  escuela_profesional: string;
-  ciclo: number;
-  voto_emitido: boolean;
-  created_at: string;
-  updated_at: string;
-  codigo: string;
-}
-
-const inputSchema = z.object({
-  codigo: z
-    .string()
-    .length(10, { message: "Debe tener al menos 10 caracteres" }),
-});
-
-type Formfields = z.infer<typeof inputSchema>;
+import { Formfields, inputSchema } from "./schemas/emitirVoto.schema";
+import { Estudiante } from "./interfaces/emitirVoto.interfaces";
 
 const EmitirVotoPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [estudiante, setEstudiante] = useState<Estudiante | null>(null);
   const [partido, setPartido] = useState<PartidosJunta[]>([]);
   const [btnColor, setBtncolor] = useState(false);
+  const [voteLoading, setVoteLoading] = useState(false);
   const [selectedParty, setSelectedParty] = useState<PartidosJunta | null>(
     null
   );
@@ -62,7 +44,6 @@ const EmitirVotoPage = () => {
 
   const onSubmit = async (values: Formfields) => {
     try {
-      console.log(values);
       const res = await api.get(`estudiantes/${values.codigo}`);
       setEstudiante(res.data);
       if (res.status == 200) {
@@ -98,7 +79,6 @@ const EmitirVotoPage = () => {
 
   const handleConfirm = async () => {
     if (!estudiante) {
-      console.log("No hay estudiante");
       return;
     }
 
@@ -109,26 +89,30 @@ const EmitirVotoPage = () => {
     };
 
     try {
+      setVoteLoading(true);
+
       const res = await api.post("voto", voto);
 
-      console.log(res);
 
       setIsModalOpen(false);
       reset();
       setSelectedParty(null);
       setBtncolor(false);
-      console.log(voto);
 
-      toast.success("voto realizado", {
+      toast.success("Gracias por confirmar su voto", {
         richColors: true,
         duration: 2000,
         position: "top-center",
         dismissible: true,
       });
+      setVoteLoading(false);
     } catch (error) {
       console.log(error);
+    } finally {
+      setVoteLoading(false);
     }
   };
+
   const handleCancel = () => {
     setIsModalOpen(false);
     reset();
@@ -137,13 +121,23 @@ const EmitirVotoPage = () => {
   return (
     <div className="flex flex-col items-center p-4">
       <div className="w-full max-w-md mb-8">
-        <div className="flex items-center  rounded-lg  justify-center shadow-md mt-6">
+        <div className="flex flex-col items-center  rounded-lg  justify-center shadow-md mt-6">
+          <div className="text-center p-2 mb-6">
+            <h2 className="font-semibold">Ingrese su código</h2>
+          </div>
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="flex gap-6 justify-center "
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleSubmit(onSubmit)();
+              }
+            }}
+            className="flex gap-6 justify-center"
           >
             <div>
               <Input
+                autoFocus={true}
                 type="text"
                 placeholder="Buscar por código"
                 {...register("codigo")}
@@ -175,20 +169,26 @@ const EmitirVotoPage = () => {
         <DialogDescription></DialogDescription>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Datos del Votante</DialogTitle>
+            <DialogTitle className="text-center">Datos del Votante</DialogTitle>
           </DialogHeader>
           {estudiante && (
-            <div className="grid gap-4 py-4">
-              <div>Nombre: {estudiante.apellido_nombre}</div>
-              <div>Código: {estudiante.codigo}</div>
-              <div>Ciclo: {estudiante.ciclo}</div>
+            <div className="grid gap-4 py-4 bg-secondary p-2 rounded-lg">
+              <div>
+                <span>Nombre: </span> {estudiante.apellido_nombre}
+              </div>
+              <div>
+                <span>Código: </span> {estudiante.codigo}
+              </div>
+              <div>
+                <span>Ciclo: </span> {estudiante.ciclo}
+              </div>
             </div>
           )}
 
           {estudiante && estudiante.voto_emitido ? (
             <div className="text-center">
-              <h1 className="text-red-600 text-2xl font-semibold">
-                Ya se emitio el voto de este usuario
+              <h1 className="text-red-600 text-2xl font-semibold container bg-secondary p-4 rounded-lg ">
+                Usted ya emitió su voto
               </h1>
             </div>
           ) : (
@@ -198,7 +198,7 @@ const EmitirVotoPage = () => {
                   partido.map((party) => (
                     <div
                       key={party.id}
-                      className={`flex flex-col items-center p-2 border rounded cursor-pointer ${
+                      className={`flex flex-col items-center p-2 border rounded cursor-pointer text-center ${
                         selectedParty?.id === party.id
                           ? "border-blue-600 bg-blue-600"
                           : "border-gray-200"
@@ -233,7 +233,10 @@ const EmitirVotoPage = () => {
                 Cancelar
               </Button>
             ) : (
-              <Button onClick={handleConfirm} className="mt-4">
+              <Button
+                onClick={handleConfirm}
+                className="mt-4 hover:bg-blue-600 hover:text-white"
+              >
                 Confirmar Voto
               </Button>
             )}

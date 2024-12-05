@@ -8,13 +8,14 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
+  id        String @id @default(uuid())
   name      String
   last_name String
-  codigo    String   @unique
-  email     String   @unique
+  codigo    String @unique
+  email     String @unique
   password  String
-  role      Role     @default(admin)
+  role      Role   @default(admin)
+
   updatedAt DateTime @updatedAt
   createdAt DateTime @default(now())
 }
@@ -69,6 +70,11 @@ model Votos {
   voto_nulo     Boolean     @default(false)
   estudiante    Estudiantes @relation(fields: [id_estudiante], references: [id], onDelete: Cascade)
   partido       Partidos?   @relation(fields: [id_partido], references: [id], onDelete: Cascade)
+}
+
+model StudentsRegistered {
+  id                  String  @id @default(uuid())
+  they_are_registered Boolean @default(false)
 }
 
 enum Role {
