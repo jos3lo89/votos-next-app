@@ -1,7 +1,6 @@
 "use server";
 
 import { PrismaClient } from "@prisma/client";
-// import { estudiantes } from './data/estudiantes'
 
 const prisma = new PrismaClient();
 

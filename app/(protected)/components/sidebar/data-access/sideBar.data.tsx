@@ -60,6 +60,10 @@ export const sideBarData = {
           title: "Votos",
           url: "/reportes",
         },
+        {
+          title: "Graficos",
+          url: "/graficos",
+        },
       ],
     },
   ],

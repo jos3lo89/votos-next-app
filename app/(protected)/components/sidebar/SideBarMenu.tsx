@@ -12,7 +12,6 @@ const SideBarMenu = () => {
       <SidebarMenuButton size="lg">
         <div className="flex aspect-square size-8 items-center justify-center rounded-lg  text-sidebar-primary-foreground">
           {/* <activeTeam.logo className="size-9" /> */}
-          {/* <AvatarImage src="https://i.pinimg.com/736x/7a/1e/a5/7a1ea541deca5d76eae29322808db061.jpg" alt="wadaf" /> */}
           <img src="logoepis.png" alt="" />
         </div>
         <div className="grid flex-1 text-left text-sm leading-tight">

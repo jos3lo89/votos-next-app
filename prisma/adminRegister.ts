@@ -13,7 +13,7 @@ async function main() {
       data: {
         name: "admin",
         last_name: "admin",
-        codigo: "33", // codigo
+        codigo: "admin333", // codigo
         email: "33@33.com", // unico
         password: pwdHash,
         role: "admin",

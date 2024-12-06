@@ -1,9 +1,9 @@
 // import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
 
 // cloudinary.config({
-//   cloud_name: "ddqdwtsn6",
-//   api_key: "821435497647676",
-//   api_secret: "nIFPKyqlO3HTvlJMs1Lnb3Zar4M",
+//   cloud_name: "",
+//   api_key: "",
+//   api_secret: "",
 // });
 
 // export const uploadStream = async (

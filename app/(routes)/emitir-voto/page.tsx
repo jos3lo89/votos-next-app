@@ -93,7 +93,6 @@ const EmitirVotoPage = () => {
 
       const res = await api.post("voto", voto);
 
-
       setIsModalOpen(false);
       reset();
       setSelectedParty(null);
@@ -133,7 +132,7 @@ const EmitirVotoPage = () => {
                 handleSubmit(onSubmit)();
               }
             }}
-            className="flex gap-6 justify-center"
+            className="flex gap-6 justify-center p-4 bg-secondary rounded-lg"
           >
             <div>
               <Input
@@ -215,15 +214,24 @@ const EmitirVotoPage = () => {
                       </span>
                     </div>
                   ))}
+                <div
+                  onClick={() => handleVote(null)}
+                  className={`w-full h-full border rounded cursor-pointer flex justify-center items-center  flex-col ${
+                    btnColor ? "bg-orange-600" : "border-gray-200"
+                  }`}
+                >
+                  <p>Voto Nulo</p>
+                  <p>o vació</p>
+                </div>
               </div>
-              <button
+              {/* <button
                 onClick={() => handleVote(null)}
                 className={`mt-4 w-full px-2 py-2 rounded-lg border-2 border-gray-500 ${
                   btnColor ? "bg-orange-600" : "bg-transparent"
                 }`}
               >
                 Voto Nulo
-              </button>
+              </button> */}
             </>
           )}
 
